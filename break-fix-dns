@@ -1,1 +1,18 @@
+# Bad DNS error (15/09/2026)
 
+PC:DESKTOP-UT50TBB
+Path: Ethernet -> TL-SG108S -> BT Hub (192.168.1.254)
+Fault: DNS set to this PC (127.0.0.1 and ::1)  
+Symptom: Internet by number works, names do not.
+Ladder
+- Physical — Cable into TL-SG108S. First Ethernet was 169.254.x.x (no DHCP). After link up: 192.168.1.103.
+- Local IP — ipconfig /all. 192.168.1.103/24, DHCP yes, suffix home.
+- Gateway — 192.168.1.254. ping 1.1.1.1 about 20ms.
+- DNS — Wi-Fi off. DNS ::1 and 127.0.0.1. nslookup: no response from ::1. ping 1.1.1.1 still OK. After ipconfig /flushdns, ping google.com: could not find host.
+- Routing — Skipped. WAN already proven by 1.1.1.1.
+- Firewall — Not this fault.
+- App — Names failed, not the browser.
+Cause: DNS pointed at localhost. Cache hid it until flush. Wi-Fi and IPv6 DNS also hid it until they were off.
+Fix: Ethernet DNS back to Automatic.
+Proof: nslookup google.com via bthub.home. ping google.com replies.
+Next time: Wi-Fi off, break IPv4 and IPv6 DNS, flush cache before saying it still works.
